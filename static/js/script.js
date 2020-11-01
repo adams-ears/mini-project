@@ -1,15 +1,16 @@
 
-// side nav script
+
 $(document).ready(function () {
   $(".sidenav").sidenav({ edge: "right" });
-});
-
-// collapisable task list (accordian)
-$(document).ready(function () {
   $(".collapsible").collapsible();
+  $('.tooltipped').tooltip();
+  $('.datepicker').datepicker({
+        format: "dd mmmm, yyyy",
+        yearRange: 3,
+        showClearBtn: true,
+        i18n:{
+            done: "Select"
+        }
+  });
 });
 
-//tooltip urgent
-  $(document).ready(function(){
-    $('.tooltipped').tooltip();
-  });
