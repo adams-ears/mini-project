@@ -84,6 +84,7 @@ def profile(username):
     # grab the session user's username from db
     username = mongo.db.users.find_one(
         {"username": session["user"]})["username"]
+
     if session["user"]:
         return render_template("profile.html", username=username)
 
@@ -92,7 +93,7 @@ def profile(username):
 
 @app.route("/logout")
 def logout():
-    # remover user from session cookies
+    # remove user from session cookie
     flash("You have been logged out")
     session.pop("user")
     return redirect(url_for("login"))
@@ -103,7 +104,7 @@ def add_task():
     if request.method == "POST":
         is_urgent = "on" if request.form.get("is_urgent") else "off"
         task = {
-            "category_name": request.form.get("catergory_name"),
+            "category_name": request.form.get("category_name"),
             "task_name": request.form.get("task_name"),
             "task_description": request.form.get("task_description"),
             "is_urgent": is_urgent,
@@ -123,7 +124,7 @@ def edit_task(task_id):
     if request.method == "POST":
         is_urgent = "on" if request.form.get("is_urgent") else "off"
         submit = {
-            "category_name": request.form.get("catergory_name"),
+            "category_name": request.form.get("category_name"),
             "task_name": request.form.get("task_name"),
             "task_description": request.form.get("task_description"),
             "is_urgent": is_urgent,
@@ -132,9 +133,17 @@ def edit_task(task_id):
         }
         mongo.db.tasks.update({"_id": ObjectId(task_id)}, submit)
         flash("Task Successfully Updated")
+
     task = mongo.db.tasks.find_one({"_id": ObjectId(task_id)})
     categories = mongo.db.categories.find().sort("category_name", 1)
     return render_template("edit_task.html", task=task, categories=categories)
+
+
+@app.route("/delete_task/<task_id>")
+def delete_task(task_id):
+    mongo.db.tasks.remove({"_id": ObjectId(task_id)})
+    flash("Task Successfully Deleted")
+    return redirect(url_for("get_tasks"))
 
 
 if __name__ == "__main__":
